@@ -5,7 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Text.RegularExpressions;
 
-namespace Terradue.Umsso {
+namespace Terradue.Authentication.Umsso {
     public class UmssoAuthenticationType : AuthenticationType {
 
         /// <summary>
@@ -80,10 +80,6 @@ namespace Terradue.Umsso {
 
                     XmlElement loginElem = typeElem["login"];
                     if (loginElem == null) continue;
-
-//                    /* WARNING - Change (Enguerran) - we now use the email as identifier, not the username anymore */
-//                    XmlElement mailElem = loginElem["email"];
-//                    if (mailElem == null) continue;
 
                     // Get username from <login> element
                     string externalUsername = null;
