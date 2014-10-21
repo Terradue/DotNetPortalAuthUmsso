@@ -17,7 +17,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="Terradue.Portal/bin/Terradue.Authentication.Umsso.dll" target="lib/net40/Terradue.Authentication.Umsso.dll" />
+    <file src="Terradue.Authentication.Umsso/bin/Terradue.Authentication.Umsso.dll" target="lib/net40/Terradue.Authentication.Umsso.dll" />
   </files>
 
 </package>
