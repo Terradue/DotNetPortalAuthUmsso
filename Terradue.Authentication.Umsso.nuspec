@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Terradue.Authentication.Umsso</id>
-    <version>1.2.1</version>
+    <version>1.2.1.1</version>
     <title>Terradue.Authentication.Umsso</title>
     <authors>Terradue</authors>
     <licenseUrl>https://github.com/Terradue/DotNetOpenSearch/blob/master/LICENSE</licenseUrl>-->
@@ -10,7 +10,7 @@
     <description>Terradue.Authentication.Umsso is a library targeting .NET 4.0 and above with base for all Terradue.Authentication.Umsso</description>
     <summary>Terradue Umsso authentication library for .Net</summary>
     <dependencies>
-      <dependency id="Terradue.Portal" version="[2.5.5]" />
+      <dependency id="Terradue.Portal" version="[2.5.5,2.6)" />
       <dependency id="Terradue.Util" version="[1.4.0,1.5)" />
       <dependency id="log4net" version="[2.0.0]" />
       <dependency id="MySql.Data" version="[1.0.7.30073]" />
