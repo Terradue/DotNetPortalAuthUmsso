@@ -102,7 +102,7 @@ namespace Terradue.Authentication.Umsso {
                     // If username was found return with success
                     if (register || refresh) {
                         if (register) {
-                            user.AccountStatus = AccountStatusType.Enabled;
+                            user.AccountStatus = AccountStatusType.PendingActivation;
                         } else {
 //                            context.IsUserAuthenticated = true; // TODO: REMOVE
                         }
