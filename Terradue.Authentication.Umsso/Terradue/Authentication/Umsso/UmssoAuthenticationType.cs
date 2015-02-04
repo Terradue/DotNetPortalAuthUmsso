@@ -25,14 +25,15 @@ namespace Terradue.Authentication.Umsso {
         /// <returns><c>true</c> if this instance is external session active the specified context request; otherwise, <c>false</c>.</returns>
         /// <param name="context">Context.</param>
         /// <param name="request">Request.</param>
-        public override bool IsExternalSessionActive(IfyWebContext context, HttpRequest request){
+        public override bool IsExternalSessionActive(IfyWebContext context, HttpRequest request) {
             return true;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Terradue.OpenId.AuthenticationOpenId"/> class.
         /// </summary>
-        public UmssoAuthenticationType(IfyContext context) : base(context) {}
+        public UmssoAuthenticationType(IfyContext context) : base(context) {
+        }
 
         /// <summary>
         /// Gets the user profile.
@@ -40,7 +41,7 @@ namespace Terradue.Authentication.Umsso {
         /// <returns>The user profile.</returns>
         /// <param name="context">Context.</param>
         /// <param name="request">Request.</param>
-        public override User GetUserProfile(IfyWebContext context, HttpRequest request, bool strict){
+        public override User GetUserProfile(IfyWebContext context, HttpRequest request, bool strict) {
             string ConfigurationFile = context.SiteConfigFolder + Path.DirectorySeparatorChar + "auth.xml";
             XmlDocument authDoc = new XmlDocument();
 
@@ -49,43 +50,56 @@ namespace Terradue.Authentication.Umsso {
                 foreach (XmlNode typeNode in authDoc.SelectNodes("/externalAuthentication/method[@active='true']/accountType")) {
                     XmlElement methodElem = typeNode.ParentNode as XmlElement;
                     XmlElement typeElem = typeNode as XmlElement;
-                    if (typeElem == null || methodElem == null) continue;
+                    if (typeElem == null || methodElem == null)
+                        continue;
 
                     // The received "Host" header must match exactly the value of the "host" attribute.
-                    if (methodElem.HasAttribute("host") && methodElem.Attributes["host"].Value != HttpContext.Current.Request.Headers["Host"]) continue;
+                    if (methodElem.HasAttribute("host") && methodElem.Attributes["host"].Value != HttpContext.Current.Request.Headers["Host"])
+                        continue;
 
                     // The request origin ("REMOTE_HOST" server variable) must have (or be) the same IP address as the hostname (or IP address) in the value of the "remoteHost" attribute.
-                    if (methodElem.HasAttribute("remoteHost") && !context.IsRequestFromHost(methodElem.Attributes["remoteHost"].Value)) continue;
+                    if (methodElem.HasAttribute("remoteHost") && !context.IsRequestFromHost(methodElem.Attributes["remoteHost"].Value))
+                        continue;
 
                     bool match = true;
                     foreach (XmlNode conditionNode in typeElem.SelectNodes("condition")) {
                         XmlElement conditionElem = conditionNode as XmlElement;
-                        if (conditionElem == null) continue;
+                        if (conditionElem == null)
+                            continue;
 
                         string value = null, pattern = null;
-                        if (conditionElem.HasAttribute("header")) value = HttpContext.Current.Request.Headers[conditionElem.Attributes["header"].Value];
-                        else continue;
+                        if (conditionElem.HasAttribute("header"))
+                            value = HttpContext.Current.Request.Headers[conditionElem.Attributes["header"].Value];
+                        else
+                            continue;
 
-                        if (conditionElem.HasAttribute("pattern")) pattern = conditionElem.Attributes["pattern"].Value;
-                        else continue;
+                        if (conditionElem.HasAttribute("pattern"))
+                            pattern = conditionElem.Attributes["pattern"].Value;
+                        else
+                            continue;
 
-                        if (value == null || pattern == null) continue;
+                        if (value == null || pattern == null)
+                            continue;
 
                         if (!Regex.Match(value, pattern).Success) {
                             match = false;
                             break;
                         }
                     }
-                    if (!match) continue;
+                    if (!match)
+                        continue;
 
                     XmlElement loginElem = typeElem["login"];
-                    if (loginElem == null) continue;
+                    if (loginElem == null)
+                        continue;
 
                     // Get username from <login> element
                     string externalUsername = null;
-                    if (loginElem.HasAttribute("header")) externalUsername = HttpContext.Current.Request.Headers[loginElem.Attributes["header"].Value];
+                    if (loginElem.HasAttribute("header"))
+                        externalUsername = HttpContext.Current.Request.Headers[loginElem.Attributes["header"].Value];
 
-                    if (externalUsername == null) continue;
+                    if (externalUsername == null)
+                        continue;
                     //context.IsUserIdentified = true;
 
                     EntityType userEntityType = EntityType.GetEntityType(typeof(User));
@@ -101,42 +115,45 @@ namespace Terradue.Authentication.Umsso {
                     // If username was not found and automatic registration is configured, create new user
                     // If username was found return with success
                     if (register || refresh) {
-                        if (register) {
-                            user.AccountStatus = AccountStatusType.Enabled;
-                        } else {
-//                            context.IsUserAuthenticated = true; // TODO: REMOVE
-                        }
 
                         foreach (XmlElement elem in loginElem.ChildNodes) {
-                            if (elem == null) continue;
+                            if (elem == null)
+                                continue;
                             string value = null;
-                            if (elem.HasAttribute("header")) value = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
+                            if (elem.HasAttribute("header"))
+                                value = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
 
                             switch (elem.Name) {
-                                case "firstName" :
+                                case "firstName":
                                     user.FirstName = value;
                                     break;
-                                case "lastName" :
+                                case "lastName":
                                     user.LastName = value;
                                     break;
-                                case "email" :
+                                case "email":
                                     user.Email = value;
                                     break;
-                                case "affiliation" :
+                                case "affiliation":
                                     user.Affiliation = value;
                                     break;
-                                case "credits" :
+                                case "credits":
                                     int credits;
                                     Int32.TryParse(value, out credits);
                                     user.TotalCredits = credits;
                                     break;
-                                case "proxyUsername" :
+                                case "proxyUsername":
                                     //user.ProxyUsername = value;
                                     break;
-                                case "proxyPassword" :
+                                case "proxyPassword":
                                     //user.ProxyPassword = value;
                                     break;
                             }
+                        }
+
+                        if (register) {
+                            user.AccountStatus = AccountStatusType.PendingActivation;
+                        } else {
+                            //                            context.IsUserAuthenticated = true; // TODO: REMOVE
                         }
                     }
                     return user;
