@@ -18,6 +18,12 @@ namespace Terradue.Authentication.Umsso {
             }
         }
 
+        public override bool AlwaysRefreshAccount {
+            get {
+                return false;
+            }
+        }
+
         /// <summary>
         /// In a derived class, checks whether an session corresponding to the current web server session exists on the
         /// external identity provider.
@@ -114,9 +120,11 @@ namespace Terradue.Authentication.Umsso {
 
                     // If username was not found and automatic registration is configured, create new user
                     // If username was found return with success
-                    if (register || refresh) {
 
-                        foreach (XmlElement elem in loginElem.ChildNodes) {
+                    if (register) user.AccountStatus = AccountStatusType.PendingActivation;
+
+                    foreach (XmlElement elem in loginElem.ChildNodes) {
+                        if (register || refresh) {
                             if (elem == null)
                                 continue;
                             string value = null;
@@ -142,18 +150,17 @@ namespace Terradue.Authentication.Umsso {
                                     user.TotalCredits = credits;
                                     break;
                                 case "proxyUsername":
-                                    //user.ProxyUsername = value;
+                                        //user.ProxyUsername = value;
                                     break;
                                 case "proxyPassword":
-                                    //user.ProxyPassword = value;
+                                        //user.ProxyPassword = value;
                                     break;
                             }
-                        }
-
-                        if (register) {
-                            user.AccountStatus = AccountStatusType.PendingActivation;
                         } else {
-                            //                            context.IsUserAuthenticated = true; // TODO: REMOVE
+                            if (elem.HasAttribute("header") && elem.Name.Equals("email")) {
+                                user.Email = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
+                                break;
+                            }
                         }
                     }
                     return user;
