@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using Terradue.Portal;
 using System.Web;
 using System.IO;
@@ -121,7 +122,7 @@ namespace Terradue.Authentication.Umsso {
                     // If username was not found and automatic registration is configured, create new user
                     // If username was found return with success
 
-                    if (register) user.AccountStatus = AccountStatusType.PendingActivation;
+                    //if (register) user.AccountStatus = AccountStatusType.PendingActivation;
 
                     foreach (XmlElement elem in loginElem.ChildNodes) {
                         if (register || refresh) {
