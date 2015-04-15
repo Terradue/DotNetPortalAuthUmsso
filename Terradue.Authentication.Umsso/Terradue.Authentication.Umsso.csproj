@@ -9,6 +9,8 @@
     <RootNamespace>Terradue.Authentication.Umsso</RootNamespace>
     <AssemblyName>Terradue.Authentication.Umsso</AssemblyName>
     <UseMSBuildEngine>False</UseMSBuildEngine>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,9 +37,6 @@
     <Reference Include="System.Web" />
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\packages\MySql.Data.1.0.7.30073\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Terradue.Util">
       <HintPath>..\packages\Terradue.Util.1.4.0\lib\net40\Terradue.Util.dll</HintPath>
