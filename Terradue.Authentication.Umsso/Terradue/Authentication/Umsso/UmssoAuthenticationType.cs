@@ -7,38 +7,6 @@ using System.Xml;
 using System.Text.RegularExpressions;
 
 
-/*! 
-\defgroup AuthenticationUmsso AuthenticationUmsso
-@{
-
-This component is used to authenticate a user using the EO-SSO (EO Single Sign On) protocole. 
-
-\ingroup Authentication
-
-\xrefitem dep "Dependencies" "Dependencies" inherits \ref Authentication to authenticate the user and get his complete profile once the EO-SSO has trusted the user and returned information about the user.
-
-\startuml
-
-User -> WebPortal: User wants to login
-WebPortal -> EOSSO: User is redirected to the EO-SSO login page
-EOSSO -> User: Asks for credentials
-User -> EOSSO : User enter his credentials
-EOSSO --> WebPortal : EO-SSO returns information about the user \nand validates his authentication
-WebPortal -> WebServer : User is authenticated
-WebServer -> Database : Load the user profile
-Database --> WebServer: Returns user profile
-WebServer --> WebPortal: Returns user profile
-WebPortal -> User: User is logged
-
-footer
-EO-SSO Authentication sequence diagram
-(c) Terradue Srl
-endfooter
-\enduml
-
-@}
-*/
-
 namespace Terradue.Authentication.Umsso {
     public class UmssoAuthenticationType : AuthenticationType {
 

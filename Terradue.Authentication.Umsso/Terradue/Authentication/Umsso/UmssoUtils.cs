@@ -17,7 +17,7 @@ In the core, the \ref Context component provides with an interface
 that allows using HTTP headers present in the HHTP context to authenticate the user.
 Associated with a set of rules, the \ref Authentication is able to establish a protocol to authenticate user.
 
-Next "Code ruleset" is the excerpt of the ruleset configured in ngEO to enable UM-SSO authentication. 
+Next "Code ruleset" is the excerpt of the ruleset configured to enable UM-SSO authentication. 
 The externalAuthentication is declared with the method UM-SSO. accountType maps the rule to an account. 
 The rule is applied only if the condition that specified that the header \c Umsso-Person-commonName
 is present and not empty. Then the value present in \c Umsso-Person-commonName is used as login username
@@ -48,26 +48,26 @@ Following diagram depicts the User status when logging with UM-SSO.
 \startuml
 
 start
-if (secured service?) then (yes)
-  if (UM-SSO logged?) then (yes)
-    if (user in DB?) then (yes)
-      if (user pending activation?) then (yes)
-        :reinvite user to confirm email
+    if (secured service?) then (yes)
+      if (UM-SSO logged?) then (yes)
+        if (user in DB?) then (yes)
+          if (user pending activation?) then (yes)
+            :reinvite user to confirm email
+            stop
+          endif
+        else (no)
+          :create user account in db
+          :set account status to **Pending Activation**
+          :send confirmation email to user
+          :invite user to confirm email
+          stop
+        endif
+      else (no)
+        :redirect user to UM-SSO IDP
         stop
       endif
-    else (no)
-      :create user account in db
-      :set account status to **Pending Activation**
-      :send confirmation email to user
-      :invite user to confirm email
-      stop
     endif
-  else (no)
-    :redirect user to UM-SSO IDP
-    stop
-  endif
-endif
-:process service
+    :process service
 stop
 
 footer
