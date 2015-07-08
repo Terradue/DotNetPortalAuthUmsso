@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Text.RegularExpressions;
 
+
 namespace Terradue.Authentication.Umsso {
     public class UmssoAuthenticationType : AuthenticationType {
 

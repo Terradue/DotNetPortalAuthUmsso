@@ -9,20 +9,21 @@ using Terradue.Portal;
 using Terradue.Util;
 
 /*!
-\defgroup modules_umsso UM-SSO
+\defgroup Auth_Umsso UM-SSO plugin
 @{
+
 This module enables external authentication using UM-SSO mechanism. 
-In the core, the \ref core_Context component provides with an interface
+In the core, the \ref Context component provides with an interface
 that allows using HTTP headers present in the HHTP context to authenticate the user.
-Associated with a set of rules, the \ref core is able to establish a protocol to authenticate user.
-\ref umrea "Code ruleset" is the excerpt of the ruleset configured in ngEO to enable UM-SSO authentication. 
+Associated with a set of rules, the \ref Authentication is able to establish a protocol to authenticate user.
+
+Next "Code ruleset" is the excerpt of the ruleset configured in ngEO to enable UM-SSO authentication. 
 The externalAuthentication is declared with the method UM-SSO. accountType maps the rule to an account. 
 The rule is applied only if the condition that specified that the header \c Umsso-Person-commonName
 is present and not empty. Then the value present in \c Umsso-Person-commonName is used as login username
 and user is registered automatically if not yet present in the database with register="true" 
 and the user receives a account creation mail with the mail information found in header Umsso-Person-Email.
 
-\anchor umrea
 \code{.xml}
 <?xml version="1.0" encoding="UTF-8"?>
 <externalAuthentication>
@@ -39,33 +40,129 @@ and the user receives a account creation mail with the mail information found in
 </externalAuthentication>
 \endcode
 
-\ingroup modules
+\ingroup Security
 
-\ref uasd depicts the scenarios that applies when a user perform an HTTP request to a web service protected by UM-SSO. This scenario is the “normal” case where user credentials are correct.
 
-\anchor uasd
-\image latex "graphics/sequence/umsso_authentication.eps" "UM-SSO authentication sequence diagram" width=10cm
+Following diagram depicts the User status when logging with UM-SSO.
 
-\section sec_modules_umssoPurpose Purpose
+\startuml
 
-| Requirements  | Abstract | Purpose |
-| ------------- | -------- | ------- |
-| \req{ngEO-SUB-005-WEBS-DES} | UM-SSO Authentication | User’s requests are authenticated by the Web server via UM-SSO. |
-| \req{ngEO-SUB-006-WEBS-DES} | Authentication | The Web client is redirected to the UM-SSO for the first connection to the Web server and after a log-in/log-out action. |
+start
+if (secured service?) then (yes)
+  if (UM-SSO logged?) then (yes)
+    if (user in DB?) then (yes)
+      if (user pending activation?) then (yes)
+        :reinvite user to confirm email
+        stop
+      endif
+    else (no)
+      :create user account in db
+      :set account status to **Pending Activation**
+      :send confirmation email to user
+      :invite user to confirm email
+      stop
+    endif
+  else (no)
+    :redirect user to UM-SSO IDP
+    stop
+  endif
+endif
+:process service
+stop
 
-\section sec_modules_umssoDependencies Dependencies
+footer
+GeoHazards TEP User account activity diagram
+(c) Terradue Srl
+endfooter
 
-- \ref core_Context, via the IExternalAuthentication interface, it implements an authentication mechanism
+\enduml
 
-\section sec_modules_umssoInterfaces Interfaces 
 
-This component implements those interfaces
+Next diagram depicts the scenarios that applies when a user perform an HTTP request to a web service protected by UM-SSO. This scenario is the “normal” case where user credentials are correct.
 
-\icd{IExternalAuthentication}
+\startuml
+actor "User\n(Web Browser)" as U
+participant "Web Server\n(ngEO SP checkpoint)" as W
+participant "Web Service\nusing :Context" as C
+participant "Authentication\nConfiguration\nAuth.xml" as A
+entity "UM-SSO Identity Provider" as I
 
-\section sec_modules_umssoReferences References
+autonumber
 
-- \refdoc{SIE-UMSSO-SP-INT-001}
+== UM-SSO authentication ==
+
+U ->> W: HTTP request
+activate W
+
+alt "user not authenticated on UM-SSO"
+
+W -->> U: HTTP redirect\nto IdP
+deactivate W
+activate U
+U ->> I: login form URL
+deactivate U
+activate I
+I -->> U: login form
+deactivate I
+
+U ->> I: username & password
+activate I
+I -> I:Authenticate user
+I -->> U: user credentials (cookie, SAML token, validity period, redirection)
+deactivate I
+
+U -> U: Write cookie
+U ->> W: HTTP redirect
+
+end
+
+activate W
+W ->> I: check User attribute
+activate I
+I -->> W: Identity attributes in SAML
+deactivate I
+W -> W: Create a security context
+W -->> U: HTTP redirection\nto original resources
+deactivate W
+activate U
+
+== Web Server authentication ==
+
+U ->> W: original HTTP request
+deactivate U
+activate W
+W -> C: original HTTP request\n+ additional HTTP headers
+deactivate W
+
+activate C
+
+C -> A: Read configuration
+A --> C: Authentication RuleSet
+C -> C: Apply ruleset\nto HTTP Headers
+
+alt "User not present in DB"
+
+C -> C: Register new User\n(username, email)
+
+end
+
+C -> C: Initialize Local Context\nwith user space
+C -> C: Perform request 
+
+C --> W: HTTP response
+deactivate C
+W -->> U: HTTP response
+
+footer 
+DIAG_NAME version ${project.version} / ${buildNumber}
+(c) Terradue Srl ${project.inceptionYear}
+endfooter
+
+\enduml
+
+\xrefitem int "Interfaces" "Interfaces" implements \ref Authentication to enable UM-SSO Authentication.
+
+\xrefitem norm "Normative References" "Normative References" EO op UM-SSO Interface Control Document [SIE-EO-OP-UM-SSO-ICD-002]
 
 @}
 

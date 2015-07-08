@@ -1,9 +1,29 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+
+/*!
+
+\namespace Terradue.Authentication.Umsso
+@{
+    Terradue.Authentication.Umsso Software Package
+
+    \xrefitem sw_version "Versions" "Software Package Version" 1.2.3
+
+    \xrefitem sw_link "Link" "Software Package Link" [Terradue.Authentication.Umsso](https://git.terradue.com/sugar/terradue-authentication-umsso)
+
+    \xrefitem sw_license "License" "Software License" [incubating](https://git.terradue.com/sugar/terradue-authentication-umsso/master/LICENSE.txt)
+
+    \xrefitem sw_req "Require" "Software Dependencies" \ref Terradue.Portal
+
+    \ingroup Security
+@}
+
+*/
+
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
-[assembly: AssemblyTitle ("Terradue.Umsso")]
+[assembly: AssemblyTitle ("Terradue.Authentication.Umsso")]
 [assembly: AssemblyDescription ("Terradue .Net UM-SSO Library")]
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("Terradue")]
