@@ -19,14 +19,19 @@ This component is used to authenticate a user using the EO-SSO (EO Single Sign O
 
 \startuml
 
-*] --> Login : User wants to login
-Login -> EO-SSO : User is redirected to the EO-SSO login page
-EO-SSO : User enter his credentials
-EO-SSO -> Login : EO-SSO returns information about the user and validates his authentication
-Login : User is authenticated, recognized and his profile is loaded
+User -> WebPortal: User wants to login
+WebPortal -> EOSSO: User is redirected to the EO-SSO login page
+EOSSO -> User: Asks for credentials
+User -> EOSSO : User enter his credentials
+EOSSO --> WebPortal : EO-SSO returns information about the user \nand validates his authentication
+WebPortal -> WebServer : User is authenticated
+WebServer -> Database : Load the user profile
+Database --> WebServer: Returns user profile
+WebServer --> WebPortal: Returns user profile
+WebPortal -> User: User is logged
 
 footer
-GeoHazards TEP User account activity diagram
+EO-SSO Authentication sequence diagram
 (c) Terradue Srl
 endfooter
 \enduml
