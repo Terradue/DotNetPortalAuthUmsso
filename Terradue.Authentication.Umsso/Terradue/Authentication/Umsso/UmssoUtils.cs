@@ -52,22 +52,22 @@ start
       if (UM-SSO logged?) then (yes)
         if (user in DB?) then (yes)
           if (user pending activation?) then (yes)
-            :reinvite user to confirm email
+            :reinvite user to confirm email;
             stop
-          endif
+          endif 
         else (no)
-          :create user account in db
-          :set account status to **Pending Activation**
-          :send confirmation email to user
-          :invite user to confirm email
+          :create user account in db;
+          :set account status to **Pending Activation**;
+          :send confirmation email to user;
+          :invite user to confirm email;
           stop
         endif
       else (no)
-        :redirect user to UM-SSO IDP
+        :redirect user to UM-SSO IDP;
         stop
       endif
     endif
-    :process service
+    :process service;
 stop
 
 footer
