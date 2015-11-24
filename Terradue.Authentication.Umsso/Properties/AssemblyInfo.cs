@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 \namespace Terradue.Authentication.Umsso
 @{
-    Terradue.Authentication.Umsso Software Package
+    Terradue .Net UM-SSO Library provides with an autentication mechanism via Web Single Sign-On implementations based on OpenSAML.
 
     \xrefitem sw_version "Versions" "Software Package Version" 1.2.3
 
