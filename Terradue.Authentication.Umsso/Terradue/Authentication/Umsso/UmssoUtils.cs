@@ -17,35 +17,18 @@ In the core, the \ref Context component provides with an interface
 that allows using HTTP headers present in the HHTP context to authenticate the user.
 Associated with a set of rules, the \ref Authentication is able to establish a protocol to authenticate user.
 
-Next "Code ruleset" is the excerpt of the ruleset configured to enable UM-SSO authentication. 
-The externalAuthentication is declared with the method UM-SSO. accountType maps the rule to an account. 
+Typical code ruleset is declared with the method UM-SSO. accountType maps the rule to an account. 
 The rule is applied only if the condition that specified that the header \c Umsso-Person-commonName
 is present and not empty. Then the value present in \c Umsso-Person-commonName is used as login username
 and user is registered automatically if not yet present in the database with register="true" 
 and the user receives a account creation mail with the mail information found in header Umsso-Person-Email.
-
-\code{.xml}
-<?xml version="1.0" encoding="UTF-8"?>
-<externalAuthentication>
-    <method name="UM-SSO" active="true">
-        <!-- List of user groups expressed with regular expression -->
-        <!-- Each pattern matching corresponds to a privilege -->
-        <accountType>
-            <condition header="Umsso-Person-commonName" pattern=".+" />
-            <login header="Umsso-Person-commonName" register="true" mail="true">
-                <email header="Umsso-Person-Email" />
-            </login>
-        </accountType>
-    </method>
-</externalAuthentication>
-\endcode
 
 \ingroup Security
 
 
 Following diagram depicts the User status when logging with UM-SSO.
 
-\startuml
+\startuml "User login with UM-SSO activity diagram"
 
 start
     if (secured service?) then (yes)
@@ -70,17 +53,13 @@ start
     :process service;
 stop
 
-footer
-GeoHazards TEP User account activity diagram
-(c) Terradue Srl
-endfooter
-
 \enduml
 
 
 Next diagram depicts the scenarios that applies when a user perform an HTTP request to a web service protected by UM-SSO. This scenario is the “normal” case where user credentials are correct.
 
-\startuml
+\startuml "UM-SSO protected HTTP request sequence diagram"
+
 actor "User\n(Web Browser)" as U
 participant "Web Server\n(ngEO SP checkpoint)" as W
 participant "Web Service\nusing :Context" as C
@@ -152,11 +131,6 @@ C -> C: Perform request
 C --> W: HTTP response
 deactivate C
 W -->> U: HTTP response
-
-footer 
-DIAG_NAME version ${project.version} / ${buildNumber}
-(c) Terradue Srl ${project.inceptionYear}
-endfooter
 
 \enduml
 
