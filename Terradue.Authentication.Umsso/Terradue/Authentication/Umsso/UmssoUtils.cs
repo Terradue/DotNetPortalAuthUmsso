@@ -9,15 +9,15 @@ using Terradue.Portal;
 using Terradue.Util;
 
 /*!
-\defgroup Auth_Umsso UM-SSO plugin
+\defgroup Auth_Umsso EM-SSO plugin
 @{
 
-This module enables external authentication using UM-SSO mechanism. 
+This module enables external authentication using EO-SSO mechanism. 
 In the core, the \ref Context component provides with an interface
 that allows using HTTP headers present in the HHTP context to authenticate the user.
 Associated with a set of rules, the \ref Authentication is able to establish a protocol to authenticate user.
 
-Typical code ruleset is declared with the method UM-SSO. accountType maps the rule to an account. 
+Typical code ruleset is declared with the method EO-SSO. accountType maps the rule to an account. 
 The rule is applied only if the condition that specified that the header \c Umsso-Person-commonName
 is present and not empty. Then the value present in \c Umsso-Person-commonName is used as login username
 and user is registered automatically if not yet present in the database with register="true" 
@@ -26,13 +26,13 @@ and the user receives a account creation mail with the mail information found in
 \ingroup Security
 
 
-Following diagram depicts the User status when logging with UM-SSO.
+Following diagram depicts the User status when logging with EO-SSO.
 
-\startuml "User login with UM-SSO activity diagram"
+\startuml "User login with EO-SSO activity diagram"
 
 start
     if (secured service?) then (yes)
-      if (UM-SSO logged?) then (yes)
+      if (EO-SSO logged?) then (yes)
         if (user in DB?) then (yes)
           if (user pending activation?) then (yes)
             :reinvite user to confirm email;
@@ -46,7 +46,7 @@ start
           stop
         endif
       else (no)
-        :redirect user to UM-SSO IDP;
+        :redirect user to EO-SSO IDP;
         stop
       endif
     endif
@@ -56,23 +56,23 @@ stop
 \enduml
 
 
-Next diagram depicts the scenarios that applies when a user perform an HTTP request to a web service protected by UM-SSO. This scenario is the “normal” case where user credentials are correct.
+Next diagram depicts the scenarios that applies when a user perform an HTTP request to a web service protected by EO-SSO. This scenario is the “normal” case where user credentials are correct.
 
-\startuml "UM-SSO protected HTTP request sequence diagram"
+\startuml "EO-SSO protected HTTP request sequence diagram"
 
 actor "User" as U
 participant "Service Provider\ncheckpoint" as W
 participant "Portal" as C
-entity "UM-SSO Identity Provider" as I
+entity "EO-SSO Identity Provider" as I
 
 autonumber
 
-== UM-SSO authentication ==
+== EO-SSO authentication ==
 
 U ->> W: HTTP request
 activate W
 
-alt "user not authenticated on UM-SSO"
+alt "user not authenticated on EO-SSO"
 
 W -->> U: HTTP redirect\nto IdP
 deactivate W
@@ -132,9 +132,9 @@ W -->> U: HTTP response
 
 \enduml
 
-\xrefitem int "Interfaces" "Interfaces" implements \ref Authentication to enable UM-SSO Authentication.
+\xrefitem int "Interfaces" "Interfaces" implements \ref Authentication to enable EO-SSO Authentication.
 
-\xrefitem norm "Normative References" "Normative References" EO op UM-SSO Interface Control Document [SIE-EO-OP-UM-SSO-ICD-002]
+\xrefitem norm "Normative References" "Normative References" EO op EO-SSO Interface Control Document [SIE-EO-OP-UM-SSO-ICD-002]
 
 @}
 
