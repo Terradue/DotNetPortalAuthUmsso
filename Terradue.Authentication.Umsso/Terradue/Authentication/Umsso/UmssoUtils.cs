@@ -60,10 +60,9 @@ Next diagram depicts the scenarios that applies when a user perform an HTTP requ
 
 \startuml "UM-SSO protected HTTP request sequence diagram"
 
-actor "User\n(Web Browser)" as U
-participant "Web Server\n(ngEO SP checkpoint)" as W
-participant "Web Service\nusing :Context" as C
-participant "Authentication\nConfiguration\nAuth.xml" as A
+actor "User" as U
+participant "Service Provider\ncheckpoint" as W
+participant "Portal" as C
 entity "UM-SSO Identity Provider" as I
 
 autonumber
@@ -115,8 +114,7 @@ deactivate W
 
 activate C
 
-C -> A: Read configuration
-A --> C: Authentication RuleSet
+C -> C: Read Authentication RuleSet
 C -> C: Apply ruleset\nto HTTP Headers
 
 alt "User not present in DB"
