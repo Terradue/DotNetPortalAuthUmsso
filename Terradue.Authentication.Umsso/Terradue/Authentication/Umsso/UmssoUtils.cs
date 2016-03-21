@@ -9,7 +9,7 @@ using Terradue.Portal;
 using Terradue.Util;
 
 /*!
-\defgroup Auth_Umsso EM-SSO plugin
+\defgroup Auth_Umsso EO-SSO plugin
 @{
 
 This module enables external authentication using EO-SSO mechanism. 
