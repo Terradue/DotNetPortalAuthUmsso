@@ -8,11 +8,11 @@ using System.Runtime.CompilerServices;
 @{
     Terradue .Net UM-SSO Library provides with an autentication mechanism via Web Single Sign-On implementations based on OpenSAML.
 
-    \xrefitem sw_version "Versions" "Software Package Version" 1.2.3
+    \xrefitem sw_version "Versions" "Software Package Version" 1.2.7
 
     \xrefitem sw_link "Link" "Software Package Link" [Terradue.Authentication.Umsso](https://git.terradue.com/sugar/terradue-authentication-umsso)
 
-    \xrefitem sw_license "License" "Software License" [incubating](https://git.terradue.com/sugar/terradue-authentication-umsso/master/LICENSE.txt)
+    \xrefitem sw_license "License" "Software License" [AGPL](https://git.terradue.com/sugar/terradue-authentication-umsso/master/LICENSE)
 
     \xrefitem sw_req "Require" "Software Dependencies" \ref Terradue.Portal
 
