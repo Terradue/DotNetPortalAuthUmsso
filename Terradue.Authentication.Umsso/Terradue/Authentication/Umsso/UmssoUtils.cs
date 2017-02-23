@@ -9,63 +9,132 @@ using Terradue.Portal;
 using Terradue.Util;
 
 /*!
-\defgroup modules_umsso UM-SSO
+\defgroup Auth_Umsso EO-SSO plugin
 @{
-This module enables external authentication using UM-SSO mechanism. 
-In the core, the \ref core_Context component provides with an interface
+
+This module enables external authentication using EO-SSO mechanism. 
+In the core, the \ref Context component provides with an interface
 that allows using HTTP headers present in the HHTP context to authenticate the user.
-Associated with a set of rules, the \ref core is able to establish a protocol to authenticate user.
-\ref umrea "Code ruleset" is the excerpt of the ruleset configured in ngEO to enable UM-SSO authentication. 
-The externalAuthentication is declared with the method UM-SSO. accountType maps the rule to an account. 
+Associated with a set of rules, the \ref Authentication is able to establish a protocol to authenticate user.
+
+Typical code ruleset is declared with the method EO-SSO. accountType maps the rule to an account. 
 The rule is applied only if the condition that specified that the header \c Umsso-Person-commonName
 is present and not empty. Then the value present in \c Umsso-Person-commonName is used as login username
 and user is registered automatically if not yet present in the database with register="true" 
 and the user receives a account creation mail with the mail information found in header Umsso-Person-Email.
 
-\anchor umrea
-\code{.xml}
-<?xml version="1.0" encoding="UTF-8"?>
-<externalAuthentication>
-    <method name="UM-SSO" active="true">
-        <!-- List of user groups expressed with regular expression -->
-        <!-- Each pattern matching corresponds to a privilege -->
-        <accountType>
-            <condition header="Umsso-Person-commonName" pattern=".+" />
-            <login header="Umsso-Person-commonName" register="true" mail="true">
-                <email header="Umsso-Person-Email" />
-            </login>
-        </accountType>
-    </method>
-</externalAuthentication>
-\endcode
+\ingroup Security
 
-\ingroup modules
 
-\ref uasd depicts the scenarios that applies when a user perform an HTTP request to a web service protected by UM-SSO. This scenario is the “normal” case where user credentials are correct.
+Following diagram depicts the User status when logging with EO-SSO.
 
-\anchor uasd
-\image latex "graphics/sequence/umsso_authentication.eps" "UM-SSO authentication sequence diagram" width=10cm
+\startuml "User login with EO-SSO activity diagram"
 
-\section sec_modules_umssoPurpose Purpose
+start
+    if (secured service?) then (yes)
+      if (EO-SSO logged?) then (yes)
+        if (user in DB?) then (yes)
+          if (user pending activation?) then (yes)
+            :reinvite user to confirm email;
+            stop
+          endif 
+        else (no)
+          :create user account in db;
+          :set account status to **Pending Activation**;
+          :send confirmation email to user;
+          :invite user to confirm email;
+          stop
+        endif
+      else (no)
+        :redirect user to EO-SSO IDP;
+        stop
+      endif
+    endif
+    :process service;
+stop
 
-| Requirements  | Abstract | Purpose |
-| ------------- | -------- | ------- |
-| \req{ngEO-SUB-005-WEBS-DES} | UM-SSO Authentication | User’s requests are authenticated by the Web server via UM-SSO. |
-| \req{ngEO-SUB-006-WEBS-DES} | Authentication | The Web client is redirected to the UM-SSO for the first connection to the Web server and after a log-in/log-out action. |
+\enduml
 
-\section sec_modules_umssoDependencies Dependencies
 
-- \ref core_Context, via the IExternalAuthentication interface, it implements an authentication mechanism
+Next diagram depicts the scenarios that applies when a user perform an HTTP request to a web service protected by EO-SSO. This scenario is the “normal” case where user credentials are correct.
 
-\section sec_modules_umssoInterfaces Interfaces 
+\startuml "EO-SSO protected HTTP request sequence diagram"
 
-This component implements those interfaces
+actor "User" as U
+participant "Service Provider\ncheckpoint" as W
+participant "Portal" as C
+entity "EO-SSO Identity Provider" as I
 
-\icd{IExternalAuthentication}
+autonumber
 
-\section sec_modules_umssoReferences References
+== EO-SSO authentication ==
 
-- \refdoc{SIE-UMSSO-SP-INT-001}
+U ->> W: HTTP request
+activate W
+
+alt "user not authenticated on EO-SSO"
+
+W -->> U: HTTP redirect\nto IdP
+deactivate W
+activate U
+U ->> I: login form URL
+deactivate U
+activate I
+I -->> U: login form
+deactivate I
+
+U ->> I: username & password
+activate I
+I -> I:Authenticate user
+I -->> U: user credentials (cookie, SAML token, validity period, redirection)
+deactivate I
+
+U -> U: Write cookie
+U ->> W: HTTP redirect
+
+end
+
+activate W
+W ->> I: check User attribute
+activate I
+I -->> W: Identity attributes in SAML
+deactivate I
+W -> W: Create a security context
+W -->> U: HTTP redirection\nto original resources
+deactivate W
+activate U
+
+== Web Server authentication ==
+
+U ->> W: original HTTP request
+deactivate U
+activate W
+W -> C: original HTTP request\n+ additional HTTP headers
+deactivate W
+
+activate C
+
+C -> C: Read Authentication RuleSet
+C -> C: Apply ruleset\nto HTTP Headers
+
+alt "User not present in DB"
+
+C -> C: Register new User\n(username, email)
+
+end
+
+C -> C: Initialize Local Context\nwith user space
+C -> C: Perform request 
+
+C --> W: HTTP response
+deactivate C
+W -->> U: HTTP response
+
+\enduml
+
+\xrefitem int "Interfaces" "Interfaces" implements \ref Authentication to enable EO-SSO Authentication.
+
+\xrefitem norm "Normative References" "Normative References" EO op EO-SSO Interface Control Document [SIE-EO-OP-UM-SSO-ICD-002]
 
 @}
 
