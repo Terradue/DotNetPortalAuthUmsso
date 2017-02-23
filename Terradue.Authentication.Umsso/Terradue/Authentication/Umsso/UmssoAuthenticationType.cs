@@ -38,8 +38,9 @@ namespace Terradue.Authentication.Umsso {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Terradue.OpenId.AuthenticationOpenId"/> class.
+        /// Initializes a new instance of the <see cref="T:Terradue.Authentication.Umsso.UmssoAuthenticationType"/> class.
         /// </summary>
+        /// <param name="context">Context.</param>
         public UmssoAuthenticationType(IfyContext context) : base(context) {
         }
 
@@ -110,7 +111,6 @@ namespace Terradue.Authentication.Umsso {
                         continue;
                     //context.IsUserIdentified = true;
 
-                    EntityType userEntityType = EntityType.GetEntityType(typeof(User));
                     AuthenticationType authType = IfyWebContext.GetAuthenticationType(typeof(UmssoAuthenticationType));
 
                     bool exists = User.DoesUserExist(context, externalUsername, authType);
@@ -148,7 +148,7 @@ namespace Terradue.Authentication.Umsso {
                                     break;
                                 case "credits":
                                     int credits;
-                                    Int32.TryParse(value, out credits);
+                                    int.TryParse(value, out credits);
                                     user.TotalCredits = credits;
                                     break;
                                 case "proxyUsername":
