@@ -119,6 +119,8 @@ namespace Terradue.Authentication.Umsso {
                     bool register = !exists && loginElem.HasAttribute("register") && loginElem.Attributes["register"].Value == "true";
                     bool refresh = exists && loginElem.HasAttribute("refresh") && loginElem.Attributes["refresh"].Value == "true";
 
+                    context.LogInfo(this, string.Format("EO-SSO Get user : {0}", user.Username));
+                    context.LogDebug(this, string.Format("EO-SSO Get user : exists = {0} -- refresh = {1}", exists, refresh));
 
                     // If username was not found and automatic registration is configured, create new user
                     // If username was found return with success
@@ -132,6 +134,8 @@ namespace Terradue.Authentication.Umsso {
                             string value = null;
                             if (elem.HasAttribute("header"))
                                 value = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
+
+                            context.LogDebug(this, string.Format("EO-SSO Get user : {0} = {1}", elem.Name, value));
 
                             switch (elem.Name) {
                                 case "firstName":
