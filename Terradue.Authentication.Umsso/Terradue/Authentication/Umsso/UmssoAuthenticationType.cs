@@ -150,6 +150,9 @@ namespace Terradue.Authentication.Umsso {
                                 case "affiliation":
                                     user.Affiliation = value;
                                     break;
+                                case "country":
+                                    user.Country = value;
+                                    break;
                                 case "credits":
                                     int credits;
                                     int.TryParse(value, out credits);
@@ -162,6 +165,7 @@ namespace Terradue.Authentication.Umsso {
                                         //user.ProxyPassword = value;
                                     break;
                             }
+                            if (refresh) user.Store();
                         } else {
                             if (elem.HasAttribute("header") && elem.Name.Equals("email")) {
                                 user.Email = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
