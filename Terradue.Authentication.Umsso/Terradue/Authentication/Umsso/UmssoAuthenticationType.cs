@@ -177,9 +177,9 @@ namespace Terradue.Authentication.Umsso {
                     }
                     if (refresh) {
                         user.Store();
-                        //we do not store the email in case of email change
-                        if (!string.IsNullOrEmpty(email)) user.Email = email;
                     }
+                    //we do not store the email in case of email change
+                    if (!string.IsNullOrEmpty(email)) user.Email = email;
                     return user;
                 }
                 return null;
