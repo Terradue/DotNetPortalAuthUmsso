@@ -14,6 +14,6 @@ using log4net;
 [assembly: AssemblyLicenseUrl("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.2.10")]
-[assembly: AssemblyInformationalVersion("1.2.10")]
+[assembly: AssemblyVersion("1.2.11")]
+[assembly: AssemblyInformationalVersion("1.2.11")]
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
