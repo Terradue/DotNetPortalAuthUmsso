@@ -127,6 +127,8 @@ namespace Terradue.Authentication.Umsso {
 
                     //if (register) user.AccountStatus = AccountStatusType.PendingActivation;
 
+                    string email = null;
+
                     foreach (XmlElement elem in loginElem.ChildNodes) {
                         if (register || refresh) {
                             if (elem == null)
@@ -136,8 +138,6 @@ namespace Terradue.Authentication.Umsso {
                                 value = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
 
                             context.LogDebug(this, string.Format("EO-SSO Get user : {0} = {1}", elem.Name, value));
-
-                            string email = null;
 
                             switch (elem.Name) {
                                 case "firstName":
@@ -167,17 +167,17 @@ namespace Terradue.Authentication.Umsso {
                                         //user.ProxyPassword = value;
                                     break;
                             }
-                            if (refresh) {
-                                user.Store();
-                                //we do not store the email in case of email change
-                                if (!string.IsNullOrEmpty(email)) user.Email = email;
-                            }
                         } else {
                             if (elem.HasAttribute("header") && elem.Name.Equals("email")) {
                                 user.Email = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
                                 break;
                             }
                         }
+                    }
+                    if (refresh) {
+                        user.Store();
+                        //we do not store the email in case of email change
+                        if (!string.IsNullOrEmpty(email)) user.Email = email;
                     }
                     return user;
                 }
