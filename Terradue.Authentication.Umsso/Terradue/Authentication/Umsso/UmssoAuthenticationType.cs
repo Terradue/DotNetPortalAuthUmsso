@@ -138,34 +138,35 @@ namespace Terradue.Authentication.Umsso {
                                 value = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
 
                             context.LogDebug(this, string.Format("EO-SSO Get user : {0} = {1}", elem.Name, value));
-
-                            switch (elem.Name) {
-                                case "firstName":
-                                    user.FirstName = value;
-                                    break;
-                                case "lastName":
-                                    user.LastName = value;
-                                    break;
-                                case "email":
-                                    email = value;
-                                    break;
-                                case "affiliation":
-                                    user.Affiliation = value;
-                                    break;
-                                case "country":
-                                    user.Country = value;
-                                    break;
-                                case "credits":
-                                    int credits;
-                                    int.TryParse(value, out credits);
-                                    user.TotalCredits = credits;
-                                    break;
-                                case "proxyUsername":
+                            if (!string.IsNullOrEmpty(value)) {
+                                switch (elem.Name) {
+                                    case "firstName":
+                                        user.FirstName = value;
+                                        break;
+                                    case "lastName":
+                                        user.LastName = value;
+                                        break;
+                                    case "email":
+                                        email = value;
+                                        break;
+                                    case "affiliation":
+                                        user.Affiliation = value;
+                                        break;
+                                    case "country":
+                                        user.Country = value;
+                                        break;
+                                    case "credits":
+                                        int credits;
+                                        int.TryParse(value, out credits);
+                                        user.TotalCredits = credits;
+                                        break;
+                                    case "proxyUsername":
                                         //user.ProxyUsername = value;
-                                    break;
-                                case "proxyPassword":
+                                        break;
+                                    case "proxyPassword":
                                         //user.ProxyPassword = value;
-                                    break;
+                                        break;
+                                }
                             }
                         } else {
                             if (elem.HasAttribute("header") && elem.Name.Equals("email")) {
