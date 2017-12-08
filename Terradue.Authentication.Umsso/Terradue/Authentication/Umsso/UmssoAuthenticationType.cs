@@ -127,6 +127,8 @@ namespace Terradue.Authentication.Umsso {
 
                     //if (register) user.AccountStatus = AccountStatusType.PendingActivation;
 
+                    string email = null;
+
                     foreach (XmlElement elem in loginElem.ChildNodes) {
                         if (register || refresh) {
                             if (elem == null)
@@ -136,41 +138,35 @@ namespace Terradue.Authentication.Umsso {
                                 value = HttpContext.Current.Request.Headers[elem.Attributes["header"].Value];
 
                             context.LogDebug(this, string.Format("EO-SSO Get user : {0} = {1}", elem.Name, value));
-
-                            string email = null;
-
-                            switch (elem.Name) {
-                                case "firstName":
-                                    user.FirstName = value;
-                                    break;
-                                case "lastName":
-                                    user.LastName = value;
-                                    break;
-                                case "email":
-                                    email = value;
-                                    break;
-                                case "affiliation":
-                                    user.Affiliation = value;
-                                    break;
-                                case "country":
-                                    user.Country = value;
-                                    break;
-                                case "credits":
-                                    int credits;
-                                    int.TryParse(value, out credits);
-                                    user.TotalCredits = credits;
-                                    break;
-                                case "proxyUsername":
+                            if (!string.IsNullOrEmpty(value)) {
+                                switch (elem.Name) {
+                                    case "firstName":
+                                        user.FirstName = value;
+                                        break;
+                                    case "lastName":
+                                        user.LastName = value;
+                                        break;
+                                    case "email":
+                                        email = value;
+                                        break;
+                                    case "affiliation":
+                                        user.Affiliation = value;
+                                        break;
+                                    case "country":
+                                        user.Country = value;
+                                        break;
+                                    case "credits":
+                                        int credits;
+                                        int.TryParse(value, out credits);
+                                        user.TotalCredits = credits;
+                                        break;
+                                    case "proxyUsername":
                                         //user.ProxyUsername = value;
-                                    break;
-                                case "proxyPassword":
+                                        break;
+                                    case "proxyPassword":
                                         //user.ProxyPassword = value;
-                                    break;
-                            }
-                            if (refresh) {
-                                user.Store();
-                                //we do not store the email in case of email change
-                                if (!string.IsNullOrEmpty(email)) user.Email = email;
+                                        break;
+                                }
                             }
                         } else {
                             if (elem.HasAttribute("header") && elem.Name.Equals("email")) {
@@ -178,6 +174,11 @@ namespace Terradue.Authentication.Umsso {
                                 break;
                             }
                         }
+                    }
+                    if (refresh) {
+                        user.Store();
+                        //we do not store the email in case of email change
+                        if (!string.IsNullOrEmpty(email)) user.Email = email;
                     }
                     return user;
                 }
