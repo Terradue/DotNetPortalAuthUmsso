@@ -175,6 +175,9 @@ namespace Terradue.Authentication.Umsso {
                             }
                         }
                     }
+                    if (register && user.Username.Contains("@")) {
+                        user.Username = user.Username.Substring(0,user.Username.IndexOf("@")).Replace(".","");
+                    }
                     if (refresh) {
                         user.Store();
                     }
