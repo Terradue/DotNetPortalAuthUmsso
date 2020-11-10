@@ -175,11 +175,14 @@ namespace Terradue.Authentication.Umsso {
                             }
                         }
                     }
+                    if (register && user.Username.Contains("@")) {
+                        user.Username = user.Username.Substring(0,user.Username.IndexOf("@")).Replace(".","");
+                    }
                     if (refresh) {
                         user.Store();
-                        //we do not store the email in case of email change
-                        if (!string.IsNullOrEmpty(email)) user.Email = email;
                     }
+                    //we do not store the email in case of email change
+                    if (!string.IsNullOrEmpty(email)) user.Email = email;
                     return user;
                 }
                 return null;
