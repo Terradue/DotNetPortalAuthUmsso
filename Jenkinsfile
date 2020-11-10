@@ -23,7 +23,7 @@ pipeline {
     }
     stage('Package') {
       steps {
-        sh "nuget4mono -g origin/${env.BRANCH_NAME} -p Terradue.Authentication.Umsso/packages.config Terradue.Authentication.Umsso/bin/Terradue.Authentication.Umsso.dll Terradue.Authentication.Umsso/Resources/**/*,content/modules/umsso"
+        sh "nuget4mono -g origin/${env.BRANCH_NAME} -p ${workspace}/Terradue.Authentication.Umsso/packages.config ${workspace}/Terradue.Authentication.Umsso/bin/Terradue.Authentication.Umsso.dll ${workspace}/Terradue.Authentication.Umsso/Resources/**/*,content/modules/umsso"
         sh 'cat *.nuspec'
         sh 'nuget pack -OutputDirectory build'
         sh "echo ${params.NUGET_PUBLISH}"           
