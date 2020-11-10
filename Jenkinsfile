@@ -11,7 +11,7 @@ pipeline {
       steps {
         sh 'rm -rf packges */bin build'
         sh 'mkdir -p build'
-        sh 'nuget restore'
+        sh 'nuget restore -MSBuildVersion 14'
         sh 'ls -la'
       }
     }
@@ -37,7 +37,7 @@ pipeline {
       }
       steps {
         echo 'Deploying'
-        sh "nuget push build/*.nupkg -ApiKey ${params.NUGET_API_KEY} -Source https://nuget.org/api/v2/package"
+        sh "nuget push build/*.nupkg -ApiKey ${params.NUGET_API_KEY} -Source https://www.nuget.org/api/v2/package"
       }       
     }
   }
